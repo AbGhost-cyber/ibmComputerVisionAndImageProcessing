@@ -10,7 +10,7 @@ js_dev_y = [37810, 43515, 46823, 49293, 53437, 56373, 62375, 66674, 68745, 68746
 
 # fig, ax = plt.subplots()
 plt.style.use('dark_background')
-plt.plot(ages_x, py_dev_y, label='Python')
+plt.bar(ages_x, py_dev_y, label='Python')
 plt.plot(ages_x, js_dev_y, label='Javascript')
 plt.plot(ages_x, dev_y, color='#FFFFFF', linestyle='--', label='All Developers')
 
