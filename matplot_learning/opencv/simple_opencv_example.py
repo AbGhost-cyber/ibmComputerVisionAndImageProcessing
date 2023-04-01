@@ -12,7 +12,7 @@ new_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 # plt.show()
 
 # with color channels
-baboon = cv2.imread("images/baboon.png")
+baboon = cv2.imread("../images/baboon.png")
 # plt.figure(figsize=(7, 7))
 # plt.imshow(cv2.cvtColor(baboon, cv2.COLOR_BGR2RGB))
 # plt.show()
@@ -26,6 +26,10 @@ plt.title('RGB Image')
 plt.subplot(122)
 plt.imshow(im_bgr, cmap='gray')
 plt.title("Different color channels blue(top), green (middle), red(bottom)")
-plt.show()
+# plt.show()
+i = baboon
+c = baboon.copy()
 if __name__ == '__main__':
-    print()
+    print(id(i))
+    print(id(baboon))
+    print(id(c))

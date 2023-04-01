@@ -35,7 +35,7 @@ image_gray = ImageOps.grayscale(image)
 # plt.show()
 
 # color channels
-baboon = Image.open("matplot_learning/images/baboon.png")
+baboon = Image.open("../images/baboon.png")
 baboon_array = np.array(baboon)
 red, green, blue = baboon.split()
 # plt.imshow(get_concat_h(baboon, blue))
