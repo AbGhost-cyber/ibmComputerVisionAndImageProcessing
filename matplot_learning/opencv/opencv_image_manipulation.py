@@ -33,6 +33,14 @@ flip = {"ROTATE_90_CLOCKWISE": cv2.ROTATE_90_CLOCKWISE,
 #     plt.title(key)
 #     plt.show()
 
+
+
+
+
+
+
+
+
 # cropping
 upper = 150
 lower = 400
