@@ -80,6 +80,8 @@ new_image = cv2.convertScaleAbs(gold_hill, alpha=alpha, beta=beta)
 
 zelda = cv2.imread("../images/zelda.png", cv2.IMREAD_GRAYSCALE)
 new_image = cv2.equalizeHist(zelda)
+
+
 # plot_image(zelda, new_image, "Orignal", "Histogram Equalization")
 
 
@@ -119,7 +121,23 @@ max_value = 255
 min_value = 0
 image = cv2.imread("../images/cameraman.jpeg", cv2.IMREAD_GRAYSCALE)
 new_image = thresholding(image, threshold=threshold, max_value=max_value, min_value=min_value)
-plot_image(image, new_image, "Orignal", "Image After Thresholding")
+# plot_image(image, new_image, "Orignal", "Image After Thresholding")
+
+ret, new_image = cv2.threshold(image, 0, max_value, cv2.THRESH_OTSU)
+# plot_image(image, new_image, title_2="Image after Thresholding")
+thresh_methods = {"binary": cv2.THRESH_BINARY,
+                  "trunc": cv2.THRESH_TRUNC, "otsu's method": cv2.THRESH_OTSU}
+
+
+for name, method in thresh_methods.items():
+    plt.subplot(1, 2, 1)
+    plt.title("Original")
+    plt.imshow(image, cmap='gray')
+    plt.subplot(1, 2, 2)
+    plt.title(name)
+    thresh, image_out = cv2.threshold(image, 0, 255, method)
+    plt.imshow(image_out, cmap='gray')
+    plt.show()
 if __name__ == '__main__':
     print()
     # print("toy image\n", toy_image)
