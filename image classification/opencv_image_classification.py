@@ -35,7 +35,7 @@ for (i, image_path) in enumerate(image_paths):
     # read image and convert to grayscale
     image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2GRAY)
     # label image using annotations
-    short_img_path = image_path[len(root_folder):]
+    short_img_path = image_path[len(root_folder):]  # remove root folder path from image
     img_label = annotations['annotations'][short_img_path][0]['label']
     label = class_object.index(img_label)
     tmp_label = img_label
@@ -43,7 +43,7 @@ for (i, image_path) in enumerate(image_paths):
     image = cv2.resize(image, (32, 32))
     # flatten the image
     pixels = image.flatten()
-    # Append flattened image to
+    # Append flattened image & labels
     train_images.append(pixels)
     train_labels.append(label)
     # print('Loaded...', '\U0001F483', 'Image', str(i + 1), 'is a', tmp_label)
@@ -57,13 +57,14 @@ train_labels = train_labels.reshape((train_labels.size, 1))
 # split data into training anf test set
 test_size = 0.2
 train_samples, test_samples, train_labels, test_labels = train_test_split(train_images, train_labels,
-                                                                          test_size=test_size, random_state=0)
+                                                                          test_size=test_size, random_state=4)
 
 # we will use cv2 KNN
-
 start_datetime = datetime.now()
 
 knn = cv2.ml.KNearest_create()
+# row sample specifies that the train_samples is a row-wise array of feature vector(i.e, each row of the train_sample
+# represents a separate feature vector
 knn.train(train_samples, cv2.ml.ROW_SAMPLE, train_labels)
 
 # get different values of K
@@ -74,8 +75,8 @@ k_result = []
 for k in k_values:
     ret, result, neighbors, dist = knn.findNearest(test_samples, k=k)
     k_result.append(result)
-flattened = []
 
+flattened = []
 for res in k_result:
     flat_result = [item for sublist in res for item in sublist]
     flattened.append(flat_result)
@@ -94,7 +95,6 @@ for k_res in k_result:
     correct = np.count_nonzero(matches)
     # calculate accuracy
     accuracy = correct * 100.0 / result.size
-    accuracy_res.append(accuracy)
     accuracy_res.append(accuracy)
 # stor accuracy for later when we create the graph
 res_accuracy = {k_values[i]: accuracy_res[i] for i in range(len(k_values))}
@@ -116,7 +116,21 @@ x, y = zip(*list_res)
 # plt.show()
 
 # We will get the best value of k to train the model to test the model on our image:
-k_best = max(list_res,key=lambda item:item[1])[0]
-print(k_best)
+k_best = max(list_res, key=lambda item: item[1])[0]
+
+# test
+my_image = cv2.cvtColor(cv2.imread("/Users/mac/Downloads/cat.jpeg"), cv2.COLOR_BGR2GRAY)
+my_image = cv2.resize(my_image, (32, 32))
+# flatten
+pixel_image = my_image.flatten()
+pixel_image = np.array([pixel_image]).astype('float32')
+ret, result, neighbors, dist = knn.findNearest(pixel_image, k=k_best)
+print(neighbors)
+print(ret)
+print(result)
+print(dist)
+mClass = int(ret)
+print('Your image was classified as a ' + str(annotations['labels'][mClass]))
+
 if __name__ == '__main__':
     print()
