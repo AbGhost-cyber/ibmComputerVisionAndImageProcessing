@@ -128,11 +128,45 @@ class Data(Dataset):
         return self.len
 
 
+# Create logistic_regression class that inherits nn.Module which is the base class for all neural networks
+class logistic_regression(nn.Module):
+
+    # Constructor
+    def __init__(self, n_inputs):
+        super(logistic_regression, self).__init__()
+        # Single layer of Logistic Regression with number of inputs being n_inputs and there being 1 output
+        # This linear layer computes the weighted sum of the input features, which is then passed
+        # into the sigmoid activation function in the forward method.
+        self.linear = nn.Linear(in_features=n_inputs, out_features=1)
+
+    # Prediction
+    def forward(self, x):
+        # first computes the weighted sum of feature x by passing x through the linear layer,
+        # then it applies the sigmoid activation function to produce the output probability
+        yhat = torch.sigmoid(self.linear(x))
+        return yhat
+
+
 data_set = Data()
+model = logistic_regression(n_inputs=1)
+criterion = nn.BCELoss()
 x, y = data_set[0]
-print("x = {},  y = {}".format(x, y))
-print("TensorFlow has access to the following devices:")
-for device in tf.config.list_physical_devices():
-    print(f"* {device}")
+
+# Create the plot_error_surfaces object
+
+# 15 is the range of w
+# 13 is the range of b
+# data_set[:][0] are all the X values
+# data_set[:][1] are all the Y values
+
+# get_surface = plot_error_surfaces(15, 13, data_set[:][0], data_set[:][1])
+
+# x, y = data_set[0]
+# print("x = {},  y = {}".format(x, y))
+# plt.plot(data_set.x[data_set.y == 0], data_set.y[data_set.y == 0], 'ro', label="y=0")
+# plt.plot(data_set.x[data_set.y == 1], data_set.y[data_set.y == 1]-1, 'o', label="y=1")
+# plt.xlabel('x')
+# plt.legend()
+# plt.show()
 if __name__ == '__main__':
     print()
