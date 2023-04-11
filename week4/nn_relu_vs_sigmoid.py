@@ -145,6 +145,14 @@ plt.title('training loss iterations')
 plt.legend()
 plt.show()
 
+# Compare the validation loss
+
+plt.plot(training_results['validation_accuracy'], label='sigmoid')
+plt.plot(training_results_relu['validation_accuracy'], label='relu')
+plt.ylabel('validation accuracy')
+plt.xlabel('Iteration')
+plt.legend()
+
 if __name__ == '__main__':
     print(training_results_relu)
     print(training_results)
