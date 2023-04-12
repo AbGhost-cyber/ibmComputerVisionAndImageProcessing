@@ -38,6 +38,7 @@ def plot_decision_regions_3class(model, data_set):
     plt.plot(X[y[:] == 2, 0], X[y[:] == 2, 1], 'o', label='y=2')
     plt.title("decision region")
     plt.legend()
+    plt.show()
 
 
 # Create the dataset class
@@ -142,8 +143,39 @@ def accuracy(model, data_set):
 
 # Create the dataset and plot it
 data_set = Data()
-data_set.plot_data()
+# data_set.plot_data()
 data_set.y = data_set.y.view(-1)
 
+# Initialize a dictionary to contain the cost and accuracy
+Results = {"momentum 0": {"Loss": 0, "Accuracy:": 0}, "momentum 0.1": {"Loss": 0, "Accuracy:": 0}}
+
+# Train a model with 1 hidden layer and 50 neurons
+# Size of input layer is 2, hidden layer is 50, and output layer is 3
+# Our X values are x and y coordinates and this problem has 3 classes
+Layers = [2, 50, 3]
+# create model
+model = Net(Layers)
+learning_rate = 0.10
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=0.2)
+train_loader = DataLoader(dataset=data_set, batch_size=20)
+criterion = nn.CrossEntropyLoss()
+Results['momentum 0'] = train(data_set, model, criterion, train_loader, optimizer, epochs=100)
+plot_decision_regions_3class(model, data_set)
+
+# Plot the Loss result for each term
+# for key, value in Results.items():
+#     plt.plot(value['Loss'], label=key)
+#     plt.legend()
+#     plt.xlabel('epoch')
+#     plt.ylabel('Total Loss or Cost')
+#     plt.show()
+
+# Plot the Accuracy result for each term
+# for key, value in Results.items():
+#     plt.plot(value['Accuracy'],label=key)
+#     plt.legend()
+#     plt.xlabel('epoch')
+#     plt.ylabel('Accuracy')
+#     plt.show()
 if __name__ == '__main__':
     print()
