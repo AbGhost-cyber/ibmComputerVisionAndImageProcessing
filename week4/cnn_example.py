@@ -10,6 +10,7 @@ import torchvision.datasets as dsets
 import matplotlib.pylab as plt
 # Allows us to use arrays to manipulate and store data
 import numpy as np
+from torch.utils.data import DataLoader
 
 IMAGE_SIZE = 16
 
@@ -151,8 +152,90 @@ class CNN(nn.Module):
 # Create the model object using CNN class, 16 output channel for the first layer, 32 for the second
 
 model = CNN(out_1=16, out_2=32)
-plot_parameters(model.state_dict()['cnn1.weight'], number_rows=4, name="1st layer kernels before training ")
-plot_parameters(model.state_dict()['cnn2.weight'], number_rows=4, name='2nd layer kernels before training')
+# plot_parameters(model.state_dict()['cnn1.weight'], number_rows=4, name="1st layer kernels before training ")
+# plot_parameters(model.state_dict()['cnn2.weight'], number_rows=4, name='2nd layer kernels before training')
+
+# We create a criterion which will measure loss
+criterion = nn.CrossEntropyLoss()
+learning_rate = 0.1
+# Create an optimizer that updates model parameters using the learning rate and gradient
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+# Create a Data Loader for the training data with a batch size of 100
+train_loader = DataLoader(dataset=train_dataset, batch_size=100)
+# Create a Data Loader for the validation data with a batch size of 5000
+validation_loader = DataLoader(dataset=validation_dataset, batch_size=5000)
+
+# Train the model
+
+# Number of times we want to train on the taining dataset
+n_epochs = 3
+# List to keep track of cost and accuracy
+cost_list = []
+accuracy_list = []
+# Size of the validation dataset
+N_test = len(validation_dataset)
+
+
+# Model Training Function
+def train_model(n_epochs):
+    # Loops for each epoch
+    for epoch in range(n_epochs):
+        # Keeps track of cost for each epoch
+        COST = 0
+        # For each batch in train loader
+        for x, y in train_loader:
+            # Resets the calculated gradient value, this must be done each time as it accumulates if we do not reset
+            optimizer.zero_grad()
+            # Makes a prediction based on X value
+            z = model(x)
+            # Measures the loss between prediction and actual Y value
+            loss = criterion(z, y)
+            # Calculates the gradient value with respect to each weight and bias
+            loss.backward()
+            # Updates the weight and bias according to calculated gradient value
+            optimizer.step()
+            # Cumulates loss
+            COST += loss.data
+
+        # Saves cost of training data of epoch
+        cost_list.append(COST)
+        # Keeps track of correct predictions
+        correct = 0
+        # Perform a prediction on the validation  data
+        for x_test, y_test in validation_loader:
+            # Makes a prediction
+            z = model(x_test)
+            # The class with the max value is the one we are predicting
+            _, yhat = torch.max(z.data, 1)
+            # Checks if the prediction matches the actual value
+            correct += (yhat == y_test).sum().item()
+
+        # Calculates accuracy and saves it
+        accuracy = correct / N_test
+        accuracy_list.append(accuracy)
+
+
+train_model(n_epochs)
+# Plot the Loss and Accuracy vs Epoch graph
+
+fig, ax1 = plt.subplots()
+color = 'tab:red'
+ax1.plot(cost_list, color=color)
+ax1.set_xlabel('epoch', color=color)
+ax1.set_ylabel('Cost', color=color)
+ax1.tick_params(axis='y', color=color)
+
+ax2 = ax1.twinx()
+color = 'tab:blue'
+ax2.set_ylabel('accuracy', color=color)
+ax2.set_xlabel('epoch', color=color)
+ax2.plot(accuracy_list, color=color)
+ax2.tick_params(axis='y', color=color)
+fig.tight_layout()
+
+# Plot the channels
+plot_channels(model.state_dict()['cnn1.weight'])
+plot_channels(model.state_dict()['cnn2.weight'])
 
 if __name__ == '__main__':
     print()
