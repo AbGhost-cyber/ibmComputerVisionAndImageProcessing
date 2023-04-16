@@ -108,20 +108,20 @@ image.resize((int(height * half), int(width * half)))
 transform = transforms.Compose([transforms.ToTensor()])
 img = transform(image)
 
-# make a prediction
-pred = model([img])
-
-# likelihood or prob of each class
-mscore = pred[0]['scores'][0]
-
-# the class number corresponds to the index of the list with the corresponding category name
-index = pred[0]['labels'][0].item()
-mlabel = COCO_INSTANCE_CATEGORY_NAMES[index]
-
-# we can have the coordinates of the bounding box
-bounding_box = pred[0]['boxes'][0].tolist()
-# round the components of the bounding box
-top, left, bottom, right = [round(x) for x in bounding_box]
+# # make a prediction
+# pred = model([img])
+#
+# # likelihood or prob of each class
+# mscore = pred[0]['scores'][0]
+#
+# # the class number corresponds to the index of the list with the corresponding category name
+# index = pred[0]['labels'][0].item()
+# mlabel = COCO_INSTANCE_CATEGORY_NAMES[index]
+#
+# # we can have the coordinates of the bounding box
+# bounding_box = pred[0]['boxes'][0].tolist()
+# # round the components of the bounding box
+# top, left, bottom, right = [round(x) for x in bounding_box]
 
 # convert tensor into open cv array anf plot image
 # clipped_img = np.clip(
@@ -132,8 +132,8 @@ top, left, bottom, right = [round(x) for x in bounding_box]
 # plt.show()
 # del img_plot, top, left, right, bottom  # save memory
 
-pred_class = get_predictions(pred, objects="person")
-draw_box(pred_class, img, rect_th=1, text_size=0.5, text_th=1)
-del pred_class
+# pred_class = get_predictions(pred, objects="person")
+# draw_box(pred_class, img, rect_th=1, text_size=0.5, text_th=1)
+# del pred_class
 if __name__ == '__main__':
-    print()
+    print(img.shape)
