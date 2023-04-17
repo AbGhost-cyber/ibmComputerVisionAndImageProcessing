@@ -221,6 +221,19 @@ current_time = time.time()
 elapsed_time = current_time - start_time
 print("elapsed time", elapsed_time)
 plot_stuff(loss_list, accuracy_list)
+# Save the model to model.pt
+torch.save(model.state_dict(), 'model.pt')
+# predict
+image = Image.open('/Users/mac/Downloads/stop_sign_1.jpeg')
+transform = composed = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
+x = transform(image)
+z = model.forward(x.unsqueeze_(0))
+_, yhat = torch.max(z.data, 1)
+prediction = "Stop"
+if yhat == 1:
+    prediction = "Not Stop"
+
+imshow_(transform(image), "stop_sign_1.jpeg" + ": Prediction = " + prediction)
 
 if __name__ == '__main__':
     print()
